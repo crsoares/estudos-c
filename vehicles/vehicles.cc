@@ -19,7 +19,19 @@ void car_free_storage(void *object TSRMLS_DC)
     efree(obj);
 }
 
-zend_object_value car_create_handler(zend_class_entry *type TSRMLS_DC)
+zend_object_value car_create_handler(zend_class_entry *ce TSRMLS_DC)
+{
+    zend_object *object;
+    zend_object_value retval;
+
+    retval = zend_objects_new(&object, ce TSRMLS_CC);
+    ALLOC_HASHTABLE(object->properties);
+    zend_hash_init(object->properties, 0, NULL, ZVAL_PTR_DTOR, 0);
+    retval.handlers = &car_object_handlers;
+    return retval;
+}
+
+/*zend_object_value car_create_handler(zend_class_entry *type TSRMLS_DC)
 {
     zval *tmp;
     zend_object_value retval;
@@ -38,7 +50,7 @@ zend_object_value car_create_handler(zend_class_entry *type TSRMLS_DC)
     retval.handlers = &car_object_handlers;
 
     return retval;
-}
+}*/
 
 zend_class_entry *car_ce;
 
